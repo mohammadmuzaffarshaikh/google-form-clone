@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
-interface IForm extends Document {
+export interface IForm extends Document {
   _id: Types.ObjectId;
   formName: string;
-  formDescription: string;
+  formDescription?: string;
   elements: Types.ObjectId[]; // Reference to the FormElements schema
   isPublished: boolean;
   link: string;
@@ -21,7 +21,6 @@ const FormSchema: Schema<IForm> = new Schema(
     },
     formDescription: {
       type: String,
-      required: true,
       trim: true,
     },
     elements: {
