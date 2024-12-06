@@ -38,6 +38,7 @@ const FormSchema: Schema<IForm> = new Schema(
     },
   },
   {
+    collection: "Form",
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );

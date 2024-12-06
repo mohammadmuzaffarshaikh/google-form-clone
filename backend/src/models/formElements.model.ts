@@ -20,54 +20,57 @@ interface IFormElement extends Document {
   placeholder?: string; // Optional placeholder text for text-based inputs
 }
 
-const FormElementsSchema: Schema<IFormElement> = new mongoose.Schema({
-  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-  title: {
-    type: String,
-    required: true, // Every element must have a title (question text)
-    trim: true,
-  },
-  inputType: {
-    type: String,
-    enum: [
-      "Text",
-      "Textarea",
-      "Email",
-      "Phone",
-      "Dropdown",
-      "MultiSelectDropdown",
-      "Checkbox",
-      "Radio",
-      "File",
-      "Date",
-    ],
-    required: true,
-  },
-  options: {
-    type: [String],
-    default: [], // Default to an empty array for input types like dropdown, radio, etc.
-    validate: {
-      validator: function (v) {
-        return this.inputType === "Dropdown" ||
-          this.inputType === "MultiSelectDropdown" ||
-          this.inputType === "Radio" ||
-          this.inputType === "Checkbox"
-          ? Array.isArray(v) && v.length > 0
-          : true;
+const FormElementsSchema: Schema<IFormElement> = new mongoose.Schema(
+  {
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    title: {
+      type: String,
+      required: true, // Every element must have a title (question text)
+      trim: true,
+    },
+    inputType: {
+      type: String,
+      enum: [
+        "Text",
+        "Textarea",
+        "Email",
+        "Phone",
+        "Dropdown",
+        "MultiSelectDropdown",
+        "Checkbox",
+        "Radio",
+        "File",
+        "Date",
+      ],
+      required: true,
+    },
+    options: {
+      type: [String],
+      default: [], // Default to an empty array for input types like dropdown, radio, etc.
+      validate: {
+        validator: function (v) {
+          return this.inputType === "Dropdown" ||
+            this.inputType === "MultiSelectDropdown" ||
+            this.inputType === "Radio" ||
+            this.inputType === "Checkbox"
+            ? Array.isArray(v) && v.length > 0
+            : true;
+        },
+        message:
+          "options are required for dropdown, multi-select dropdown, and radio types.",
       },
-      message:
-        "options are required for dropdown, multi-select dropdown, and radio types.",
+    },
+    isRequired: {
+      type: Boolean,
+      default: false, // Defaults to optional fields
+    },
+    placeholder: {
+      type: String, // Optional placeholder text for text-based inputs
+      trim: true,
     },
   },
-  isRequired: {
-    type: Boolean,
-    default: false, // Defaults to optional fields
-  },
-  placeholder: {
-    type: String, // Optional placeholder text for text-based inputs
-    trim: true,
-  },
-});
+  { collection: "FormElements" }
+);
 
 // Model creation
 const FormElementsModel =

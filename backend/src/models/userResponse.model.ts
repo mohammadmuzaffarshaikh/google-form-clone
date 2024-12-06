@@ -5,7 +5,7 @@ interface IUserResponse extends Document {
   _id: Types.ObjectId;
   formId: Types.ObjectId; // Reference to the associated Form
   submittedOn: Date; // Date when the response was submitted
-  answers: Array<{
+  response: Array<{
     elementId: Types.ObjectId; // Reference to the FormElement being answered
     value: any; // Flexible to store different types of values
   }>;
@@ -25,7 +25,7 @@ const UserResponseSchema: Schema<IUserResponse> = new mongoose.Schema(
       type: Date,
       default: Date.now, // Default to the current date when the response is submitted
     },
-    answers: [
+    response: [
       {
         elementId: {
           type: mongoose.Schema.Types.ObjectId, // ID of the form element being answered
@@ -39,7 +39,7 @@ const UserResponseSchema: Schema<IUserResponse> = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true } // Automatically adds createdAt and updatedAt fields
+  { timestamps: true, collection: "UserResponse" } // Automatically adds createdAt and updatedAt fields
 );
 
 // Model creation
