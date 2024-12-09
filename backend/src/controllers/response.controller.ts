@@ -25,6 +25,7 @@ const addResponse = async (req: Request, res: Response) => {
         success: false,
         message: "Form not found or is not published.",
       });
+      return;
     }
 
     // Step 3: Save the user response
@@ -47,6 +48,7 @@ const addResponse = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 
@@ -61,6 +63,7 @@ const getAllResponses = async (req: Request, res: Response) => {
         success: false,
         message: "Form not found",
       });
+      return;
     }
 
     // 2. Fetch form data and elements
@@ -83,7 +86,7 @@ const getAllResponses = async (req: Request, res: Response) => {
     const formattedResponses = responses.map((response) => {
       return {
         _id: response._id,
-        response: response.response.map((item: any) => ({ value: item.value })),
+        response: response.response.map((item: any) => ({ value: item.value, elementId: item.elementId })),
       };
     });
 
@@ -101,6 +104,7 @@ const getAllResponses = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 
@@ -125,6 +129,7 @@ const getSpecificResponse = async (req: Request, res: Response) => {
         success: false,
         message: "Response not found.",
       });
+      return;
     }
 
     // 3. Send response
@@ -139,6 +144,7 @@ const getSpecificResponse = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 

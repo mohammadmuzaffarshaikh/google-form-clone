@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import FormModel, { IForm } from "../models/form.model";
 import FormElementsModel from "../models/formElements.model";
 import { createFormSchema, updateFormSchema } from "../schemas/form.zod";
+import UserResponseModel from "../models/userResponse.model";
 
 const createForm = async (req: Request, res: Response) => {
   try {
@@ -12,6 +13,7 @@ const createForm = async (req: Request, res: Response) => {
         message: error.message,
         error: error,
       });
+      return;
     }
 
     // Validate elements array
@@ -20,6 +22,7 @@ const createForm = async (req: Request, res: Response) => {
         success: false,
         message: "Form must have at least one element.",
       });
+      return;
     }
 
     // Insert form elements
@@ -35,7 +38,7 @@ const createForm = async (req: Request, res: Response) => {
 
     if (data?.isPublished) {
       form.isPublished = true;
-      form.link = `http://localhost:3000/forms/fill-response/${form._id}`;
+      form.link = `http://localhost:5173/forms/response/${form._id}`;
     }
 
     const createdForm = await form.save();
@@ -53,6 +56,7 @@ const createForm = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 
@@ -66,12 +70,14 @@ const updateForm = async (req: Request, res: Response) => {
         message: "Invalid input data",
         error: error.errors,
       });
+      return;
     }
     if (data?.elements && data.elements.length === 0) {
       res.status(400).json({
         success: false,
         message: "Form must have at least one element.",
       });
+      return;
     }
 
     // 2. Check if the form exists
@@ -82,12 +88,16 @@ const updateForm = async (req: Request, res: Response) => {
         success: false,
         message: "Form not found",
       });
+      return;
     }
 
-    // 3. Delete all previous elements attached to the form
+    // 3. Delete all previous elements attached to the form and also responses.
     if (existingForm.elements && existingForm.elements.length > 0) {
       await FormElementsModel.deleteMany({
         _id: { $in: existingForm.elements },
+      });
+      await UserResponseModel.deleteMany({
+        formId: formId,
       });
     }
 
@@ -106,7 +116,7 @@ const updateForm = async (req: Request, res: Response) => {
 
     // Generate a new link if the form is published
     if (existingForm.isPublished) {
-      existingForm.link = `http://localhost:3000/forms/fill-response/${existingForm._id}`;
+      existingForm.link = `http://localhost:5173/forms/response/${existingForm._id}`;
     } else {
       existingForm.link = null;
     }
@@ -128,6 +138,7 @@ const updateForm = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 
@@ -141,6 +152,7 @@ const deleteForm = async (req: Request, res: Response) => {
         success: false,
         message: "Form not found",
       });
+      return;
     }
 
     // 2. Delete all previous elements attached to the form
@@ -164,6 +176,7 @@ const deleteForm = async (req: Request, res: Response) => {
       message: "Internal server error",
       error: error.message || error,
     });
+    return;
   }
 };
 
@@ -179,6 +192,7 @@ const getAllForms = async (req: Request, res: Response) => {
         message:
           "Invalid pagination parameters. 'limit' and 'page' must be greater than 0.",
       });
+      return;
     }
 
     // Calculate the total number of forms and total pages
@@ -188,6 +202,7 @@ const getAllForms = async (req: Request, res: Response) => {
         success: false,
         message: "No forms found! Please create one.",
       });
+      return;
     }
 
     const totalPages = Math.ceil(totalForms / limit);
@@ -221,12 +236,15 @@ const getAllForms = async (req: Request, res: Response) => {
 const getForm = async (req: Request, res: Response) => {
   try {
     const formId = req.params.id;
-    const form: IForm = await FormModel.findOne({_id: formId}).populate("elements");
-    if(!form){
+    const form: IForm = await FormModel.findOne({ _id: formId }).populate(
+      "elements"
+    );
+    if (!form) {
       res.status(404).json({
         success: false,
-        message: "Form not found."
-      })
+        message: "Form not found.",
+      });
+      return;
     }
     res.status(200).json({
       success: true,
