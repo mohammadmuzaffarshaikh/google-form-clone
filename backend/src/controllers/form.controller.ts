@@ -214,7 +214,7 @@ const getAllForms = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
 
     // Fetch paginated forms
-    const forms: IForm[] = await FormModel.find().skip(skip).limit(limit);
+    const forms: IForm[] = (await FormModel.find().skip(skip).limit(limit)).reverse();
 
     res.status(200).json({
       success: true,
