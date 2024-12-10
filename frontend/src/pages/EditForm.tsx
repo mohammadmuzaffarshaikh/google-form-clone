@@ -173,7 +173,7 @@ function EditForm() {
 
   return (
     <Layout>
-      <div className="container space-y-4">
+      <div className="container space-y-4 max-w-5xl">
         <div className="flex items-center mb-4">
           <ChevronRight className="ml-1" />
           <h2 className="text-2xl font-semibold">Update Form</h2>

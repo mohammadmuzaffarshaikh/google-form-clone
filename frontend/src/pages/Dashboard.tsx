@@ -191,14 +191,17 @@ export default function Dashboard() {
                             {form.formDescription}
                           </p>
                           <div className="flex items-center space-x-2 mt-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => copyToClipboard(form.link)}
-                            >
-                              <Copy />
-                              Copy Link
-                            </Button>
+                            {form.isPublished && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => copyToClipboard(form.link)}
+                              >
+                                <Copy />
+                                Copy Link
+                              </Button>
+                            )}
+
                             <Button
                               variant="outline"
                               size="sm"

@@ -160,7 +160,7 @@ export default function NewForm() {
 
   return (
     <Layout>
-      <div className="container space-y-4">
+      <div className="container space-y-4 max-w-6xl">
         <div className="flex items-center mb-4">
           <ChevronRight className="ml-1" />
           <h2 className="text-2xl font-semibold">New Form</h2>

@@ -46,7 +46,7 @@ export default function ResponseForm() {
   const [responses, setResponses] = useState<FormResponse[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  console.log(responses);
+
   const handleInputChange = (elementId: string, value: string | string[]) => {
     setResponses((prev) => {
       const existing = prev.findIndex((r) => r.elementId === elementId);
