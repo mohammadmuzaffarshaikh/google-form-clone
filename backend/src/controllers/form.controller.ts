@@ -160,6 +160,9 @@ const deleteForm = async (req: Request, res: Response) => {
       await FormElementsModel.deleteMany({
         _id: { $in: existingForm.elements },
       });
+      await UserResponseModel.deleteMany({
+        formId: formId,
+      });
     }
 
     //  3. Delete the form
